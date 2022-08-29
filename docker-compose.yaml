@@ -1,0 +1,40 @@
+version: '3.5'
+services:
+  server:
+    image: postgrest/postgrest
+    ports:
+      - "3000:3000"
+    links:
+      - db:db
+    environment:
+      PGRST_DB_URI: postgres://root:root1234@db:5432/bank
+      PGRST_DB_SCHEMA: public
+      PGRST_DB_ANON_ROLE: root #In production this role should not be the same as the one used for the connection
+      PGRST_SERVER_PROXY_URI: "http://127.0.0.1:3000"
+    depends_on:
+      - db
+    container_name: server
+
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: bank
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root1234
+    # Uncomment this if you want to persist the data.
+    volumes:
+      - "./pgdata:/var/lib/postgresql/data"
+    container_name: level3
+
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      API_URL: http://localhost:3000/
+    container_name: swagger
