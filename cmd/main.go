@@ -4,18 +4,16 @@ import (
 	"database/sql"
 	"github.com/JCSong-89/go-udemy-master-class/api"
 	db "github.com/JCSong-89/go-udemy-master-class/db/sqlc"
+	"github.com/JCSong-89/go-udemy-master-class/utill"
+	_ "github.com/lib/pq"
 	"log"
 )
 
-const (
-	dbDriver      = "postgres"
-	dbDSN         = "postgres://postgres:root1234@localhost:5433/bank?sslmode=disable"
-	serverAddress = ":3030"
-)
-
 func main() {
+	config, err := utill.LoadConfig("../.")
+
 	// DB 커넥션
-	conn, err := sql.Open(dbDriver, dbDSN)
+	conn, err := sql.Open(config.DBdDiver, config.DBDNS)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,7 +23,7 @@ func main() {
 	server := api.NewServer(store)
 
 	//서버 시작
-	err = server.Start(serverAddress)
+	err = server.Start(config.ServerHost)
 	if err != nil {
 		log.Fatal(err)
 	}
