@@ -24,10 +24,15 @@ func NewServer(store db.Store) *Server {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
+	//USER API URI
+	router.POST("/users", server.createUser)
+
+	//ACCOUNT API URI
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
 	router.GET("/accounts", server.listAccount)
 
+	//TRANSACTION API URI
 	router.POST("/transfers", server.createTransfer)
 
 	server.router = router
