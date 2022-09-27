@@ -43,13 +43,15 @@ func (server *Server) createAccount(ctx *gin.Context) {
 			case "check_violation":
 				ctx.JSON(http.StatusBadRequest, errorResponse(err))
 				return
+			}
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
 		}
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+
+		ctx.JSON(http.StatusOK, account)
 		return
 	}
 
-	ctx.JSON(http.StatusOK, account)
-	return
 }
 
 type GetAccountRqe struct {
@@ -107,4 +109,5 @@ func (server *Server) listAccount(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, accounts)
+
 }
